@@ -1,1 +1,20 @@
-empty
+import sys,time
+from myset1 import MySet
+
+if __name__ == "__main__":
+
+    start_time = time.time()
+
+    L1 = MySet(sys.argv[1])
+    L2 = MySet(sys.argv[2])
+    R = L1 - L2
+    R.dump(sys.argv[3])
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
+    print("L1.txt: {0} emails, L2.txt: {1} emails, R.txt: {2} emails; Time taken: {3:.2f} seconds".format(
+        L1.count,
+        L2.count,
+        len(R),
+        elapsed_time))
