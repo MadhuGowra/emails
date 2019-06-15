@@ -1,0 +1,91 @@
+import sys,time
+import re
+
+class MySet(dict):
+
+    def __init__(self, file_name = None):
+        self.count = -1
+        if type(file_name) is str:
+            self.count = 0
+            email_list = {}
+            with open(file_name, 'r') as f:
+                for email in f.readlines():
+                    if re.match("^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", email):
+                        email = email.lower()
+                        if email[-1] == '\n':
+                            email = email[:-1]
+                        self[email] = 0
+                        self.count += 1
+
+    def intersection(self,list1,list2):
+
+        if len(list1) > len(list2):
+            large = list1
+            small = list2
+        else:
+            large = list2
+            small = list1
+
+        result = MySet()
+        for item in small:
+            if item in large:
+                result[item] = None
+        return result
+
+    def __and__(self, other):
+        return self.intersection(self, other)
+
+    def __sub__(self, other):
+        return self.minus(self, other)
+    def minus(self,list1,list2):
+        result = MySet()
+        for item in list1:
+            if item not in list2:
+                result[item] = None
+        return result
+
+    def __add__(self, other):
+        return self.union(self, other)
+
+    def union(self,list1,list2):
+
+        if len(list1) > len(list2):
+            large = list1
+            small = list2
+        else:
+            large = list2
+            small = list1
+
+        result = MySet()
+        for item in small:
+            result[item] = None
+        for item in large:
+            result[item] = None
+        return result
+
+    def dump(self,fname):
+        with open(fname, 'w') as f:
+            for key in self:
+                f.write(key + '\n')
+
+
+
+
+if __name__ == "__main__":
+
+    start_time = time.time()
+
+    L1 = MySet(sys.argv[1])
+    L2 = MySet(sys.argv[2])
+    R = L1 - L2
+    R.dump(sys.argv[3])
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
+    print("L1.txt: {0} emails, L2.txt: {1} emails, R.txt: {2} emails; Time taken: {3:.2f} seconds".format(
+        L1.count,
+        L2.count,
+        len(R),
+        elapsed_time))
+
